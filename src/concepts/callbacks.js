@@ -7,7 +7,13 @@ import { heroes } from '../data/heroes'
 export const callbacksComponent = (element) => {
     
     const id = '5d86371f2343e37870b91ef1';
-    findHero(id, (hero) => {
+    findHero(id, (error, hero) => {
+        //element.innerHTML = hero?.name || 'No hay heroe'; Forma de medio validar o retornar correctamente un error
+
+        if (error) {
+            element.innerHTML = error;
+        }
+
         element.innerHTML = hero.name;
     });
 }
@@ -15,11 +21,16 @@ export const callbacksComponent = (element) => {
 /**
  * 
  * @param {string} id 
- * @param {(hero: Object) => void} callback 
+ * @param {(error: string|null, hero: Object) => void} callback 
  */
 
 const findHero = (id, callback) => {
     const hero = heroes.find(hero => hero.id === id);
 
-    callback(hero);
+    if (!hero) {
+        callback(`Heroe con id: ${id}, no existe`);
+        return; //Undefined
+    }
+
+    callback(null, hero);
 }
